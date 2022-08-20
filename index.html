@@ -37,7 +37,7 @@
                             </h2>
                             <p class="text-sm font-medium text-gray-500"></p>
                         </div>
-                        <button class="text-sm">New note</button>
+                        <button class="text-sm" @click="$store.notes.createNote()">New note</button>
                     </div>
                 </div>
 
@@ -69,7 +69,7 @@
         document.addEventListener('alpine:init' , ()=> {
             Alpine.store('notes' , {
                 data:[
-                    {
+                    /* {
                         id: 1,
                         title: 'Note 1',
                         body: 'quis ut nam facilis et officia qui laboriosam mollitia et enim quasi adipisci',
@@ -80,7 +80,7 @@
                         title: 'Note 2',
                         body: 'laboriosam mollitia et enim quasi adipisci quia provident illum',
                         updated_at: 1
-                    },
+                    }, */
                 ],
                 currentNoteId: null,
 
@@ -94,12 +94,12 @@
 
                 createNote () {
                     let id = Date.now()
-                    this.data = [...this.data , {
+                    this.data = [{
                         id,
-                        title: 'Hello',
-                        body: 'Hi',
-                        updated_at: '0'
-                    }]
+                        title: '',
+                        body: '',
+                        updated_at: 0
+                    } , ...this.data ]
                     this.currentNoteId = id
 
                     this.touchCurrentNote()
