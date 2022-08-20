@@ -7,15 +7,20 @@
     <title>Tasks app</title>
 
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body>
+  
     <div class="h-screen overflow-hidden bg-gray-100 flex flex-col">
         <main class="min-w-0 flex-1 border-t border-gray-200 flex min-h-0 overflow-hidden">
             <div class="min-h-0 flex-1 overflow-y-scroll bg-white bg-white h-full w-full flex">
-                <div class="p-6 w-full flex flex-col">
-                    <input type="text" class="text-lg font-medium text-gray-900 w-full mb-6" placeholder="Untitled note">
+                <div class="p-6 w-full flex flex-col" x-data>
+                    
+                    <!-- <span x-text="$store.notes.current.title"></span> -->
 
-                    <textarea class="w-full mb-6 flex-1 outline-none" placeholder="Start writing..." autofocus></textarea>
+                    <input type="text" class="text-lg font-medium text-gray-900 w-full mb-6" placeholder="Untitled note" x-model="$store.notes.current.title">
+
+                    <textarea class="w-full mb-6 flex-1 outline-none" placeholder="Start writing..." autofocus x-model="$store.notes.current.body"></textarea>
 
                     <div>
                         <button class="text-sm text-gray-900">Delete note</button>
@@ -56,5 +61,31 @@
             </aside>
         </main>
     </div>
+
+    <script>
+        document.addEventListener('alpine:init' , ()=> {
+            Alpine.store('notes' , {
+                data:[],
+                currentNoteId: null,
+                get current(){
+                    return this.data.find(item => item.id === this.currentNoteId )
+                },
+                createNote () {
+                    let id = Date.now()
+                    this.data = [...this.data , {
+                        id,
+                        title: 'Hello',
+                        body: 'Hi'
+                    }]
+                    this.currentNoteId = id
+                },
+                init () {
+
+                    this.createNote()
+                }
+            })
+        })
+    </script>
+
 </body>
 </html>
