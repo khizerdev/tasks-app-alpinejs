@@ -44,7 +44,7 @@
                 <nav class="min-h-0 flex-1 overflow-y-auto">
                 
                     <ul class="border-b border-gray-200 divide-y divide-gray-200">
-                        <template x-for="note in $store.notes.data" :key="note.id">
+                        <template x-for="note in $store.notes.orderByUpdatedAt" :key="note.id">
                             <li class="relative bg-white py-5 px-6 hover:bg-gray-50 focus-within:ring-2 focus-within:ring-inset focus-within:ring-blue-600">
                                 <div class="flex justify-between space-x-3">
                                     <a href="#" class="block focus:outline-none">
@@ -71,21 +71,27 @@
                 data:[
                     {
                         id: 1,
-                        title: '',
+                        title: 'Note 1',
                         body: 'quis ut nam facilis et officia qui laboriosam mollitia et enim quasi adipisci',
-                        updated_at: '0'
+                        updated_at: 2
                     },
                     {
                         id: 2,
                         title: 'Note 2',
                         body: 'laboriosam mollitia et enim quasi adipisci quia provident illum',
-                        updated_at: '0'
+                        updated_at: 1
                     },
                 ],
                 currentNoteId: null,
+
                 get current(){
                     return this.data.find(item => item.id === this.currentNoteId )
                 },
+
+                get orderByUpdatedAt(){
+                    return this.data.sort((a,b) => b.updated_at - a.updated_at)
+                },
+
                 createNote () {
                     let id = Date.now()
                     this.data = [...this.data , {
@@ -102,8 +108,8 @@
                     this.current.updated_at = Date.now();
                 },
                 setCurrentNoteByIndex(index){
-                    console.log('called')
-                    this.currentNoteId = this.data[index].id
+                  
+                    this.currentNoteId = this.orderByUpdatedAt[index].id
                 },  
                 init () {
 
