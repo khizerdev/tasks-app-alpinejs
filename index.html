@@ -23,7 +23,7 @@
                     <textarea class="w-full mb-6 flex-1 outline-none" placeholder="Start writing..." autofocus x-model="$store.notes.current.body" @keyup.debounce.200="$store.notes.touchCurrentNote();$store.notes.persistNotes();"></textarea>
 
                     <div>
-                        <button class="text-sm text-gray-900">Delete note</button>
+                        <button class="text-sm text-gray-900" x-on:click="if(window.confirm('Are you sure ?')) {$store.notes.delete($store.notes.currentNoteId)}">Delete note</button>
                     </div>
                 </div>
             </div>
@@ -101,7 +101,15 @@
                 setCurrentNoteByIndex(index){
                   
                     this.currentNoteId = this.orderByUpdatedAt[index].id
-                },  
+                },
+                delete(id){
+                    if(this.data.length == 1) {
+                        this.createNote()
+                    }
+                    this.data = this.data.filter(item => item.id != this.currentNoteId)
+                    this.persistNotes()
+                    this.setCurrentNoteByIndex(0)
+                },
                 init () {
 
                     if(this.data.length) {
