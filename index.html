@@ -12,9 +12,9 @@
 <body>
   
     <div class="h-screen overflow-hidden bg-gray-100 flex flex-col">
-        <main class="min-w-0 flex-1 border-t border-gray-200 flex min-h-0 overflow-hidden">
+        <main class="min-w-0 flex-1 border-t border-gray-200 flex min-h-0 overflow-hidden"  x-data>
             <div class="min-h-0 flex-1 overflow-y-scroll bg-white bg-white h-full w-full flex">
-                <div class="p-6 w-full flex flex-col" x-data>
+                <div class="p-6 w-full flex flex-col">
                     
                     <!-- <span x-text="$store.notes.current.title"></span> -->
 
@@ -42,20 +42,23 @@
                 </div>
 
                 <nav class="min-h-0 flex-1 overflow-y-auto">
+                
                     <ul class="border-b border-gray-200 divide-y divide-gray-200">
-                        <li class="relative bg-white py-5 px-6 hover:bg-gray-50 focus-within:ring-2 focus-within:ring-inset focus-within:ring-blue-600">
-                            <div class="flex justify-between space-x-3">
-                                <a href="#" class="block focus:outline-none">
-                                    <span class="absolute inset-0"></span>
-                                    <p class="text-sm text-gray-500 truncate">Note title</p>
-                                </a>
-
-                                <time class="flex-shrink-0 whitespace-nowrap text-sm text-gray-500">00:00</time>
-                            </div>
-                            <div class="mt-1">
-                                <p class="text-sm text-gray-600">Body preview</p>
-                            </div>
-                        </li>
+                        <template x-for="note in $store.notes.data" :key="note.id">
+                            <li class="relative bg-white py-5 px-6 hover:bg-gray-50 focus-within:ring-2 focus-within:ring-inset focus-within:ring-blue-600">
+                                <div class="flex justify-between space-x-3">
+                                    <a href="#" class="block focus:outline-none">
+                                        <span class="absolute inset-0"></span>
+                                        <p class="text-sm text-gray-500 truncate" x-text="note.title || 'Untitled note'"></p>
+                                    </a>
+    
+                                    <time class="flex-shrink-0 whitespace-nowrap text-sm text-gray-500" >00:00</time>
+                                </div>
+                                <div class="mt-1">
+                                    <p class="text-sm text-gray-600" x-text="note.body.substring(0,Math.min(20, note.body.length))"></p>
+                                </div>
+                            </li>
+                        </template>
                     </ul>
                 </nav>
             </aside>
@@ -65,7 +68,18 @@
     <script>
         document.addEventListener('alpine:init' , ()=> {
             Alpine.store('notes' , {
-                data:[],
+                data:[
+                    {
+                        id: 1,
+                        title: '',
+                        body: 'quis ut nam facilis et officia qui laboriosam mollitia et enim quasi adipisci'
+                    },
+                    {
+                        id: 2,
+                        title: 'Note 2',
+                        body: 'laboriosam mollitia et enim quasi adipisci quia provident illum'
+                    },
+                ],
                 currentNoteId: null,
                 get current(){
                     return this.data.find(item => item.id === this.currentNoteId )
@@ -79,9 +93,18 @@
                     }]
                     this.currentNoteId = id
                 },
+                setCurrentNoteByIndex(index){
+                    console.log('called')
+                    this.currentNoteId = this.data[index].id
+                },
                 init () {
 
-                    this.createNote()
+                    if(this.data.length) {
+                        this.setCurrentNoteByIndex(0)
+                    } else {
+                        this.createNote()
+                    }
+
                 }
             })
         })
